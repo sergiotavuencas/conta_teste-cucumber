@@ -4,7 +4,7 @@ Feature: Cliente faz saque de dinheiro como um cliente, eu gostaria de sacar em 
   @tag1
   Scenario: Cliente especial com saldo negativo
     Given um cliente atual com o saldo de -200 reais
-    And for solicitado um saque no valor de 100 reais
+    When for solicitado um saque no valor de 100 reais
     Then deve efetuar o saque e atualizar o  saldo da conta para -300 reais
 
   @tag2
