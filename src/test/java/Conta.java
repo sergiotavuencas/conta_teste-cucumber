@@ -5,6 +5,7 @@ import io.cucumber.java.en.When;
 public class Conta {
 	double saldo;
 	double saque;
+	boolean clienteEspecial;
 	
 	@Given("um cliente atual com o saldo de {int} reais")
 	public void um_cliente_atual_com_o_saldo_de_reais(Integer int1) {
@@ -26,7 +27,8 @@ public class Conta {
 
 	@Then("deve efetuar o saque e atualizar o  saldo da conta para {int} reais")
 	public void deve_efetuar_o_saque_e_atualizar_o_saldo_da_conta_para_reais(Integer int1) { 
-	    if ((this.saldo -= this.saque) == int1) {
+		this.clienteEspecial = true;
+	    if ((this.saldo -= this.saque) == int1 && this.clienteEspecial) {
 	    	this.saldo = int1;
 	    	this.saque = 0;
 	    } else {
@@ -54,7 +56,8 @@ public class Conta {
 
 	@Then("não deve efetuar o saque e deve retornar a mensagem Saldo Insuficiente")
 	public void não_deve_efetuar_o_saque_e_deve_retornar_a_mensagem_saldo_insuficiente() {
-		if (this.saldo < 0) {
+		this.clienteEspecial = false;
+		if (this.saldo < 0 && !this.clienteEspecial) {
 			System.out.println("Saldo Insuficiente");
 		} else {
 			throw new io.cucumber.java.PendingException();
