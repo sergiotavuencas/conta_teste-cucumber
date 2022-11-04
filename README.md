@@ -53,7 +53,7 @@ cucumber
 4. Clique em **Install** para o plugin ***Cucumber Eclipse Plugin***;
 5. Siga as instruções que seram apresenstadas;
 6. Será solicitado que a IDE seja reiniciada;
-7. Após reiniciada, basta executar o projeto.
+7. Após reiniciada, o ***Cucumber*** estará pronto para ser utilizado.
 
 ## Clone este repositório
 ```
