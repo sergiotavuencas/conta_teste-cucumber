@@ -43,6 +43,17 @@ echo %JAVA_HOME%
 java -version
 ```
 
+## Configurando o Cucumber no Eclipse
+1. Abra o Eclipse IDE, e clique em **Launch**;
+2. Após aberto, procure pela opção **Help** na barra superior e a selecione;
+3. Clique em **Eclipse Marketplace**, e em **Find** pesquise por:
+```
+cucumber
+```
+4. Clique em **Install** para o plugin ***Cucumber Eclipse Plugin***;
+5. Siga as instruções que seram apresenstadas;
+6. Será solicitado que a IDE seja reiniciada;
+7. Após reiniciada, basta executar o projeto.
 
 ## Clone este repositório
 ```
@@ -51,7 +62,7 @@ git clone https://github.com/sergiotavuencas/conta_teste-cucumber
 
 
 ## Executando
-Basta abrir o repositório na IDE e executar a classe que desejar.
+Basta abrir o repositório na IDE e executar o arquivo ***conta_bdd.feature***.
 
 
 ## Tecnologias
