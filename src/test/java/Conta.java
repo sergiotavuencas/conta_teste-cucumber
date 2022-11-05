@@ -1,24 +1,27 @@
+import io.cucumber.java.PendingException;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 public class Conta {
-	Integer saldo;
-	Integer saque;
-	boolean clienteEspecial;
+	private boolean clienteEspecial;
+	private Double saldo;
+	private Double saque;
 	
 	/**
-	 *	@param saldo representa o valor total na conta do cliente.
+	 *	@param saldo representa o valor que .
 	 *	@implNote o método atribui o valor do parâmetro ao atributo "saldo" da conta,
 	 *	define o cliente como especial, e verifica se o valor do atributo é diferente de -200, 
 	 *	caso seja diferente, é jogada uma exceção.
 	 */
-	@Given("um cliente atual com o saldo de {int} reais")
-	public void um_cliente_atual_com_o_saldo_de_reais(Integer saldo) {
-	    this.saldo = saldo;
-	    this.clienteEspecial = true;
-	    if (this.saldo != -200) {
-	    	throw new io.cucumber.java.PendingException();
+	@Given("um cliente especial atual com o saldo de {double} reais")
+	public boolean saldoClienteEspecial(Double saldo) throws Throwable {
+		this.clienteEspecial = true;
+	    if (this.saldo != saldo) {
+	    	this.saldo = saldo;
+	    	return true;
+	    } else {
+	    	throw new PendingException("Valores iguais, portanto não é necessário atualizar.");
 	    }
 	}
 	
@@ -28,11 +31,13 @@ public class Conta {
 	 *	e verifica se o valor do atributo é diferente de 100, caso seja diferente, 
 	 *	é jogada uma exceção.
 	 */
-	@When("for solicitado um saque no valor de {int} reais")
-	public void for_solicitado_um_saque_no_valor_de_reais(Integer saque) {
-	    this.saque = saque;
-	    if (this.saque != 100) {
-	    	throw new io.cucumber.java.PendingException();
+	@When("for solicitado um saque no valor de {double} reais")
+	public boolean verificarSaqueClienteEspecial(Double saque) throws Throwable {
+	    if (saque > 0) {
+	    	this.saque = saque;
+	    	return true;
+	    } else {
+	    	throw new PendingException("Insira um valor maior que zero.");
 	    }
 	}
 
@@ -42,14 +47,14 @@ public class Conta {
 	 *	é igual a -300 e se o cliente é especial, caso ambas as condições sejam verdadeiras, 
 	 *	o "saldo" e o "saque" são atualizados, senão é jogada uma exceção.
 	 */
-	@Then("deve efetuar o saque e atualizar o  saldo da conta para {int} reais")
-	public void deve_efetuar_o_saque_e_atualizar_o_saldo_da_conta_para_reais(Integer saldo) {
-	    if ((this.saldo -= this.saque) == -300 && this.clienteEspecial) {
-	    	this.saldo = saldo;
-	    	this.saque = 0;
-	    } else {
-	    	throw new io.cucumber.java.PendingException();
-	    }
+	@Then("deve efetuar o saque e atualizar o saldo da conta para {double} reais")
+	public boolean sacarClienteEspecial(Double saldo) throws Throwable {
+		if ((this.saldo -= this.saque) == saldo) {
+			sacar();
+			return true;
+		} else {
+			throw new PendingException("Saldo Insuficiente.");
+		}
 	}
 	
 	/**
@@ -58,12 +63,13 @@ public class Conta {
 	 *	define o cliente como comum, e verifica se o valor do atributo é diferente de -200, 
 	 *	caso seja diferente, é jogada uma exceção.
 	 */
-	@Given("um cliente comum com saldo atual de {int} reais")
-	public void um_cliente_comum_com_saldo_atual_de_reais(Integer saldo) {
-	    this.saldo = saldo;
-	    this.clienteEspecial = false;
-	    if (this.saldo != -300) {
-	    	throw new io.cucumber.java.PendingException();
+	@Given("um cliente comum com saldo atual de {double} reais")
+	public boolean saldoClienteComum(Double saldo) throws Throwable {
+		if (this.saldo != saldo) {
+	    	this.saldo = saldo;
+	    	return true;
+	    } else {
+	    	throw new PendingException("Valores iguais, portanto não é necessário atualizar.");
 	    }
 	}
 
@@ -73,11 +79,13 @@ public class Conta {
 	 *	e verifica se o valor do atributo é diferente de 200, caso seja diferente, 
 	 *	é jogada uma exceção.
 	 */
-	@When("solicitar um saque de {int} reais")
-	public void solicitar_um_saque_de_reais(Integer saque) {
-		this.saque = saque;
-	    if (this.saque != 200) {
-	    	throw new io.cucumber.java.PendingException();
+	@When("solicitar um saque de {double} reais")
+	public boolean verificarSaqueClienteComum(Double saque) throws Throwable {
+		if (saque > 0) {
+	    	this.saque = saque;
+	    	return true;
+	    } else {
+	    	throw new PendingException("Insira um valor maior que zero.");
 	    }
 	}
 	
@@ -87,12 +95,25 @@ public class Conta {
 	 *	é a apresentada uma mensagem, senão é jogada uma exceção.
 	 */
 	@Then("não deve efetuar o saque e deve retornar a mensagem Saldo Insuficiente")
-	public void não_deve_efetuar_o_saque_e_deve_retornar_a_mensagem_saldo_insuficiente() {
-		if (this.saldo < 0 && !this.clienteEspecial) {
-			System.out.println("Saldo Insuficiente");
+	public boolean sacarClienteComum() throws Throwable {
+		if (sacar()) {
+			return true;
 		} else {
-			throw new io.cucumber.java.PendingException();
+			throw new PendingException("Saldo Insuficiente.");
 		}
 	}
-
+	
+	private boolean sacar() {
+		if (this.saldo < this.saque) {
+			if (this.clienteEspecial) {
+				this.saldo -= this.saque;
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			this.saldo -= this.saque;
+			return true;
+		}
+	}
 }
