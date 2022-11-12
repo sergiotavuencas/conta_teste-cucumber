@@ -5,115 +5,107 @@ import io.cucumber.java.en.When;
 
 public class Conta {
 	private boolean clienteEspecial;
-	private Double saldo;
-	private Double saque;
+	private Double saldoCliente;
+	private Double saqueCliente;
 	
 	/**
-	 *	@param saldo representa o valor que .
-	 *	@implNote o método atribui o valor do parâmetro ao atributo "saldo" da conta,
-	 *	define o cliente como especial, e verifica se o valor do atributo é diferente de -200, 
-	 *	caso seja diferente, é jogada uma exceção.
+	 * 	@author Sérgio Vicente Tavuencas
+	 *	@param saldo representa o valor que será atribuído a variável saldoCliente.
+	 *	@implNote O método define o tipo de cliente para especial e define um valor 
+	 *	para o saldoCliente.
 	 */
 	@Given("um cliente especial atual com o saldo de {double} reais")
-	public boolean saldoClienteEspecial(Double saldo) throws Throwable {
+	public void um_cliente_especial_atual_com_o_saldo_de_reais(Double saldo) {
 		this.clienteEspecial = true;
-	    if (this.saldo != saldo) {
-	    	this.saldo = saldo;
-	    	return true;
-	    } else {
-	    	throw new PendingException("Valores iguais, portanto não é necessário atualizar.");
-	    }
+		this.saldoCliente = saldo;
 	}
 	
 	/**
-	 *	@param saque representa o valor que será retirado.
-	 *	@implNote o método atribui o valor do parâmetro ao atributo "saque" da conta,
-	 *	e verifica se o valor do atributo é diferente de 100, caso seja diferente, 
-	 *	é jogada uma exceção.
+	 * 	@author Sérgio Vicente Tavuencas
+	 *	@param saque representa o valor que será atribuído a variável saqueCliente.
+	 *	@implNote O método verifica o tipo de cliente e se o saldo é maior que zero,
+	 *	então define um valor para o saqueCliente.
 	 */
 	@When("for solicitado um saque no valor de {double} reais")
-	public boolean verificarSaqueClienteEspecial(Double saque) throws Throwable {
-	    if (saque > 0) {
-	    	this.saque = saque;
-	    	return true;
+	public void for_solicitado_um_saque_no_valor_de_reais(Double saque) throws Throwable {
+	    if (this.clienteEspecial) {
+	    	if (saque > 0) {
+	    		this.saqueCliente = saque;
+	    	} else {
+	    		throw new PendingException("Erro ao verificar o saque, cliente especial: Valor deve ser maior que zero.");
+	    	}
 	    } else {
-	    	throw new PendingException("Insira um valor maior que zero.");
+	    	throw new PendingException("Erro ao verificar o saque, cliente especial: Cliente diferente do esperado, nesse caso, 'especial'.");
 	    }
 	}
 
 	/**
-	 *	@param saldo representa o valor total na conta do cliente.
-	 *	@implNote o método verifica se a subtração do atributo "saldo" pelo "saque"
-	 *	é igual a -300 e se o cliente é especial, caso ambas as condições sejam verdadeiras, 
-	 *	o "saldo" e o "saque" são atualizados, senão é jogada uma exceção.
+	 * 	@author Sérgio Vicente Tavuencas
+	 *	@param saldo representa o valor que será atribuído a variável saldoCliente.
+	 *	@implNote O método verifica o tipo de cliente, efetua uma subtração entre
+	 *	saldoCliente e saqueCliente, então verifica se o resultado corresponde com
+	 *	o parâmetro recebido.
 	 */
 	@Then("deve efetuar o saque e atualizar o saldo da conta para {double} reais")
-	public boolean sacarClienteEspecial(Double saldo) throws Throwable {
-		if ((this.saldo -= this.saque) == saldo) {
-			sacar();
-			return true;
+	public void deve_efetuar_o_saque_e_atualizar_o_saldo_da_conta_para_reais(Double saldo) throws Throwable {
+		if (this.clienteEspecial) {
+			if ((this.saldoCliente - this.saqueCliente) == saldo) {
+				this.saldoCliente = saldo;
+				this.saqueCliente = 0.0;
+			} else {
+				throw new PendingException("Erro ao sacar, cliente especial: Valor do saldo diferente do esperado.");
+			}
 		} else {
-			throw new PendingException("Saldo Insuficiente.");
+			throw new PendingException("Erro ao sacar, cliente especial: Cliente diferente do esperado, nesse caso, 'especial'.");
 		}
 	}
 	
 	/**
-	 *	@param saldo representa o valor total na conta do cliente.
-	 *	@implNote o método atribui o valor do parâmetro ao atributo "saldo" da conta,
-	 *	define o cliente como comum, e verifica se o valor do atributo é diferente de -200, 
-	 *	caso seja diferente, é jogada uma exceção.
+	 * 	@author Sérgio Vicente Tavuencas
+	 *	@param saldo representa o valor que será atribuído a variável saldoCliente.
+	 *	@implNote O método define um valor para o saldoCliente.
 	 */
 	@Given("um cliente comum com saldo atual de {double} reais")
-	public boolean saldoClienteComum(Double saldo) throws Throwable {
-		if (this.saldo != saldo) {
-	    	this.saldo = saldo;
-	    	return true;
-	    } else {
-	    	throw new PendingException("Valores iguais, portanto não é necessário atualizar.");
-	    }
+	public void um_cliente_comum_com_saldo_atual_de_reais(Double saldo) throws Throwable {
+		this.saldoCliente = saldo;
 	}
 
 	/**
-	 *	@param saque representa o valor que será retirado.
-	 *	@implNote o método atribui o valor do parâmetro ao atributo "saque" da conta,
-	 *	e verifica se o valor do atributo é diferente de 200, caso seja diferente, 
-	 *	é jogada uma exceção.
+	 * 	@author Sérgio Vicente Tavuencas
+	 *	@param saque representa o valor que será atribuído a variável saqueCliente.
+	 *	@implNote O método verifica o tipo de cliente e se o saldo é maior que zero,
+	 *	então define um valor para o saqueCliente.
 	 */
 	@When("solicitar um saque de {double} reais")
-	public boolean verificarSaqueClienteComum(Double saque) throws Throwable {
-		if (saque > 0) {
-	    	this.saque = saque;
-	    	return true;
+	public void solicitar_um_saque_de_reais(Double saque) throws Throwable {
+		if (!this.clienteEspecial) {
+	    	if (saque > 0) {
+	    		this.saqueCliente = saque;
+	    	} else {
+	    		throw new PendingException("Erro ao verificar o saque, cliente comum: Valor deve ser maior que zero.");
+	    	}
 	    } else {
-	    	throw new PendingException("Insira um valor maior que zero.");
+	    	throw new PendingException("Erro ao verificar o saque, cliente comum: Cliente diferente do esperado, nesse caso, 'comum'.");
 	    }
 	}
 	
 	/**
-	 *	@implNote o método verifica se o atributo "saldo" é negativo
-	 *	e se o cliente é comum, caso ambas as condições sejam verdadeiras, 
-	 *	é a apresentada uma mensagem, senão é jogada uma exceção.
+	 * 	@author Sérgio Vicente Tavuencas
+	 *	@param saldo representa o valor que será atribuído a variável saldoCliente.
+	 *	@implNote O método verifica o tipo de cliente e se o saldoCliente é maior
+	 *	que saqueCliente.
 	 */
 	@Then("não deve efetuar o saque e deve retornar a mensagem Saldo Insuficiente")
-	public boolean sacarClienteComum() throws Throwable {
-		if (sacar()) {
-			return true;
-		} else {
-			throw new PendingException("Saldo Insuficiente.");
-		}
-	}
-	
-	private boolean sacar() {
-		if (this.saldo < this.saque) {
-			if (this.clienteEspecial) {
-				this.saldo -= this.saque;
-				return true;
+	public void nao_deve_efetuar_o_saque_e_deve_retornar_a_mensagem_saldo_insuficiente() throws Throwable {
+		if (!this.clienteEspecial) {
+			if (this.saldoCliente > this.saqueCliente) {
+				this.saldoCliente -= this.saqueCliente;
+				this.saqueCliente = 0.0;
 			} else {
-				return false;
+				throw new PendingException("Saldo Insuficiente.");
 			}
 		} else {
-			this.saldo -= this.saque;
-			return true;
+			throw new PendingException("Erro ao sacar, cliente comum: Cliente diferente do esperado, nesse caso, 'especial'.");
 		}
 	}
 }
