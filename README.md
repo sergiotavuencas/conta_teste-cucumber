@@ -1,4 +1,4 @@
-# Conta Teste - Cucumber
+# Conta Teste - Cucumber e JUnit
 
 ## Sobre
 Exercício desenvolvido durante a disciplina **Qualidade e Teste de Software** com o objetivo de compreender a importância do teste de software durante o desenvolvimento do mesmo utilizando o BDD.
